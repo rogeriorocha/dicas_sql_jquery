@@ -1,37 +1,37 @@
-﻿/**
+/**
 *Atenção!!! Descomente o comando abaixo somente se deseja excluir a tabela tab_feriado_federal.
 */
---DROP TABLE IF EXISTS tab_feriado_federal;
+DROP TABLE IF EXISTS tab_feriado_federal;
 
 /**
 *Atenção!!! Descomente o comando abaixo somente se deseja excluir a tabela tab_feriado_estadual.
 */
---DROP TABLE IF EXISTS tab_feriado_estadual;
+DROP TABLE IF EXISTS tab_feriado_estadual;
 
 /**
 *Atenção!!! Descomente o comando abaixo somente se deseja excluir a tabela tab_feriado_municipal.
 */
---DROP TABLE IF EXISTS tab_feriado_municipal;
+DROP TABLE IF EXISTS tab_feriado_municipal;
 
 /**
 *Atenção!!! Descomente o comando abaixo somente se deseja excluir a tabela tab_exame_paciente (3º exemplo).
 */
---DROP TABLE IF EXISTS tab_exame_paciente;
+DROP TABLE IF EXISTS tab_exame_paciente;
 
 /**
 *Atenção!!! Descomente o comando abaixo somente se deseja excluir a tabela tab_laboratorio (3º exemplo).
 */
---DROP TABLE IF EXISTS tab_laboratorio;
+DROP TABLE IF EXISTS tab_laboratorio;
 
 /**
 *Atenção!!! Descomente o comando abaixo somente se deseja excluir a tabela tab_cidades.
 */
---DROP TABLE IF EXISTS tab_cidades;
+DROP TABLE IF EXISTS tab_cidades;
 
 /**
 *Atenção!!! Descomente o comando abaixo somente se deseja excluir a tabela tab_estados.
 */
---DROP TABLE IF EXISTS tab_estados;
+DROP TABLE IF EXISTS tab_estados;
 
 CREATE TABLE tab_feriado_federal (
     descricao character varying(50) NOT NULL,
@@ -57,11 +57,11 @@ VALUES
 /**
 *Exibe os registros da tabela tab_feriado_federal
 */
-SELECT * FROM tab_feriado_federal; 
+SELECT * FROM tab_feriado_federal;
 
 /**
-*Cria a tabela tab_estados. 
-*Armazena os estados brasileiros. 
+*Cria a tabela tab_estados.
+*Armazena os estados brasileiros.
 */
 CREATE TABLE tab_estados
 (
@@ -114,7 +114,7 @@ SELECT * FROM tab_estados;
 *Esta tabela armazena os feriados estaduais.
 */
 CREATE TABLE tab_feriado_estadual
-( 
+(
   descricao character varying(50) NOT NULL,
   feriado_estadual date NOT NULL,
   sigla_estado character(2),
@@ -138,13 +138,13 @@ INSERT INTO tab_feriado_estadual VALUES ('Assinatura do Tratado de Petrópolis',
 /*Feriado estadual ALAGOAS*/
 --16 de Setembro
 INSERT INTO tab_feriado_estadual VALUES ('Emancipação Política de Alagoas', '1900-09-16', 'AL');
---20 de Novembro 
-INSERT INTO tab_feriado_estadual VALUES ('Dia da Consciência Negra', '1900-11-20', 'AL'); 
+--20 de Novembro
+INSERT INTO tab_feriado_estadual VALUES ('Dia da Consciência Negra', '1900-11-20', 'AL');
 
 /*Feriado estadual AMAPÁ*/
 --19 de Março
 INSERT INTO tab_feriado_estadual VALUES ('Dia de São José', '1900-03-19', 'AP');
---05 de Outubro 
+--05 de Outubro
 INSERT INTO tab_feriado_estadual VALUES ('Criação do Estado', '1900-10-05', 'AP');
 
 /*Feriado estadual Amazonas*/
@@ -229,7 +229,7 @@ INSERT INTO tab_feriado_estadual VALUES ('Mártires de Cunhaú e Uruaçu', '1900
 INSERT INTO tab_feriado_estadual VALUES ('Revolução Farroupilha', '1900-09-20', 'RS');
 
 /*Feriado estadual do Rondônia*/
---04 de Janeiro  
+--04 de Janeiro
 INSERT INTO tab_feriado_estadual VALUES ('Criação do Estado', '1900-01-04', 'RO');
 
 /*Feriado estadual do Roraíma*/
@@ -259,7 +259,7 @@ SELECT * FROM tab_feriado_estadual;
 
 /**
 *Cria a tabela tab_cidades.
-*Armazena as cidades brasileiras. 
+*Armazena as cidades brasileiras.
 *Como há muitas cidades cadastrei apenas São Paulo e Rio Grande do Sul como exemplo.
 *Cadastre as cidades conforme a sua necessidade.
 */
@@ -280,7 +280,8 @@ INSERT INTO tab_cidades
 (cidade_id, cidade_nome, sigla_estado)
 VALUES
 (DEFAULT, 'São Paulo', 'SP'),
-(DEFAULT, 'Porto Alegre', 'RS');
+(DEFAULT, 'Porto Alegre', 'RS'),
+(DEFAULT, 'Belo Horizonte', 'MG');
 
 /**
 *Exibe os registros da tabela tab_cidades
@@ -309,10 +310,12 @@ INSERT INTO tab_feriado_municipal(descricao, feriado_municipal, cidade_id)
 VALUES
 --25 de janeiro
 ('Aniversário de São Paulo', '1900-01-25', 1),
---2 de fevereiro 
+--2 de fevereiro
 ('Aniversário de Porto Alegre', '1900-02-02', 2),
 --26 de março
-('Nossa Senhora dos Navegantes', '1900-03-26', 2);
+('Nossa Senhora dos Navegantes', '1900-03-26', 2),
+--12 de dezembro
+('Aniversário de Belo Horzinte', '1900-12-12', 3);
 
 /**
 *Exibe os registros da tabela tab_cidades
