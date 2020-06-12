@@ -1,42 +1,53 @@
 create or replace function adiciona_dias_uteis(var_data date, dias integer, var_cidade_id integer) returns date
-stable
-  language plpgsql
+    stable
+    language plpgsql
 as
 $$
 DECLARE
   intervalo interval := '1 day';
   contador integer = 0;
+  bDiminuir boolean;
 BEGIN
-	WHILE (contador < dias) dias LOOP
+  bDiminuir := dias < 0;
+  dias := abs(dias);
 
-		/**
-		 *Acrescenta o intervalo de um dia a data
-		 */
-		var_data :=  var_data + intervalo;
+  WHILE (contador < dias) dias LOOP
 
-		IF  not ediautil(var_data, var_cidade_id) THEN
-			CONTINUE;
-		END IF;
-
-		/**
-		 *Acrescenta um dia útil ao contador.
-		 */
-		contador := contador + 1;
-
-		/**
-		 *Exibe os valores das variaveis, durante o loop.
-		 *Caso queira verificar os valores descomente os comandos "RAISE NOTICE"
-		 */
+  /**
+   *Acrescenta o intervalo de um dia a data
+   */
+  if bDiminuir then
+     var_data :=  var_data - intervalo;
+  else
+     var_data :=  var_data + intervalo;
+  end if;
 
 
-		--RAISE NOTICE 'var_data:%', var_data;
-		--RAISE NOTICE 'contador: %', contador;
-		--RAISE NOTICE 'DOW dia da semana valor numerico:%', EXTRACT(DOW FROM var_data);
-		--RAISE NOTICE '';
-	END LOOP;
-	RETURN var_data;
+
+  IF  not ediautil(var_data, var_cidade_id) THEN
+   CONTINUE;
+  END IF;
+
+  /**
+   *Acrescenta um dia útil ao contador.
+   */
+  contador := contador + 1;
+
+  /**
+   *Exibe os valores das variaveis, durante o loop.
+   *Caso queira verificar os valores descomente os comandos "RAISE NOTICE"
+   */
+
+
+  --RAISE NOTICE 'var_data:%', var_data;
+  --RAISE NOTICE 'contador: %', contador;
+  --RAISE NOTICE 'DOW dia da semana valor numerico:%', EXTRACT(DOW FROM var_data);
+  --RAISE NOTICE '';
+ END LOOP;
+ RETURN var_data;
 END
 $$;
+
 
 
 create or replace function eDiaUtil(var_data date, var_cidade_id integer) returns boolean
