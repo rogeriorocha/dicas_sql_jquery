@@ -1,3 +1,29 @@
+create table calendario
+(
+    data             date              not null
+        constraint calendario_pk
+            primary key,
+    dia              integer           not null,
+    mes              integer           not null,
+    ano              integer           not null,
+    flg_dia_util     varchar default 1 not null,
+    flg_fim_sem      varchar default 1,
+    num_seq_dia      integer           not null,
+    dat_ant          date,
+    dat_post         date,
+    num_seq_dia_util integer,
+    num_dia_sem      integer,
+    dat_ant_util     date,
+    dat_post_util    date,
+    num_sem          integer
+);
+
+alter table calendario
+    owner to postgres;
+
+
+
+
 create or replace function gera_calendario() returns integer
     language plpgsql
 as
@@ -19,8 +45,8 @@ declare
 BEGIN
    rowsAffected := 0;
 
-   data_de := to_date('1991-01-01', 'YYYY-MM-DD');
-   data_ate := to_date('2078-12-31', 'YYYY-MM-DD');
+   data_de := to_date('2020-01-01', 'YYYY-MM-DD');
+   data_ate := to_date('2020-12-31', 'YYYY-MM-DD');
 
    num_dia := 1;
    num_dia_util := 0;
@@ -52,14 +78,14 @@ BEGIN
                                flg_dia_util, flg_fim_sem, num_seq_dia,
                                dat_ant, dat_post, num_seq_dia_util,
                                num_dia_sem
-                               ,dat_ant_util, dat_post_util
+                               ,dat_ant_util, dat_post_util, num_sem
                                )
                         values (data_de,
                                 EXTRACT(day from data_de), EXTRACT(month from data_de), EXTRACT(year from data_de),
                                 eDiaUtil, eFinalDeSemana, num_dia,
                                 data_de - interval '1 day', data_de + interval '1 day',num_dia_util,
                                 EXTRACT(DOW FROM data_de),
-                                dat_ant_util, null
+                                dat_ant_util, null, EXTRACT(week FROM data_de)
                                 );
        if (eDiaUtil = 'S') then
            dat_ant_util := data_de;
@@ -86,3 +112,5 @@ BEGIN
   RETURN rowsAffected;
 END;
 $$;
+
+alter function gera_calendario() owner to postgres;
