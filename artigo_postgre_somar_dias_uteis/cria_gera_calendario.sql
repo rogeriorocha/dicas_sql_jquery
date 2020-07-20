@@ -1,4 +1,4 @@
-create function gera_calendario() returns integer
+create or replace function gera_calendario() returns integer
     language plpgsql
 as
 $$
@@ -12,6 +12,7 @@ declare
    num_dia integer;
    num_dia_util integer;
 
+   _dat_post_util date;
    dat_ant_util date;
 
    v_calendario RECORD;
@@ -68,9 +69,16 @@ BEGIN
        data_de := data_de + interval '1 day';
    end loop;
 
-   FOR v_calendario IN SELECT data FROM calendario order by 1
+   _dat_post_util := null;
+   FOR v_calendario IN SELECT data, flg_dia_util FROM calendario order by 1 desc
    LOOP
+       update calendario
+       set dat_post_util = _dat_post_util
+       where data = v_calendario.data;
 
+       if (v_calendario.flg_dia_util = 'S') then
+           _dat_post_util := v_calendario.data;
+       end if;
 
    END LOOP;
 
@@ -78,6 +86,3 @@ BEGIN
   RETURN rowsAffected;
 END;
 $$;
-
-alter function gera_calendario() owner to postgres;
-
