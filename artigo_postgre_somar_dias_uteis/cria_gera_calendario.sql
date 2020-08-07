@@ -1,3 +1,32 @@
+
+
+create table ano_mes
+(
+    ano               integer not null,
+    mes               integer not null,
+    qtd_dia           integer,
+    qtd_dia_util      integer,
+    dat_prim_dia      date,
+    dat_prim_dia_util date,
+    dat_ult_dia       date,
+    dat_ult_dia_util  date,
+    ano_mes           integer,
+    ano_prox          integer,
+    mes_prox          integer,
+    ano_mes_prox      integer,
+    ano_ant           integer,
+    mes_ant           integer,
+    ano_mes_ant       integer,
+    num_ult_dia_util  integer,
+    num_prim_dia_util integer,
+    constraint ano_mes_pk
+        primary key (ano, mes)
+);
+
+alter table ano_mes
+    owner to postgres;
+    
+
 create table calendario
 (
     data             date              not null
@@ -45,12 +74,14 @@ declare
 BEGIN
    rowsAffected := 0;
 
-   data_de := to_date('2020-01-01', 'YYYY-MM-DD');
-   data_ate := to_date('2020-12-31', 'YYYY-MM-DD');
+   data_de := to_date('1991-01-01', 'YYYY-MM-DD');
+   data_ate := to_date('2080-12-31', 'YYYY-MM-DD');
 
    num_dia := 1;
    num_dia_util := 0;
    dat_ant_util := null;
+
+   delete from ano_mes;
 
    WHILE data_de <= data_ate LOOP
        rowsAffected := rowsAffected + 1;
@@ -108,9 +139,34 @@ BEGIN
 
    END LOOP;
 
+   --
+    insert into ano_mes
+    select EXTRACT(year FROM c.data) as ano, EXTRACT(month FROM c.data) as mes, count(*) as qtd_dia
+     , sum(case when c.flg_dia_util = 'S' then 1 else 0 end) as qtd_dia_util
+     , min(data) as dat_prim_dia
+     , min(case when c.flg_dia_util = 'S' then c.data else null end) as dat_prim_dia_util
+     , max(data) as dat_ult_dia
+     , max(case when c.flg_dia_util = 'S' then c.data else null end) as dat_utl_dia_util
+     , (EXTRACT(year FROM c.data) * 100) + EXTRACT(month FROM c.data) as ano_mes
+
+     , (EXTRACT(year FROM min(data) + interval '1 month' ) * 100) + EXTRACT(month FROM min(data) + interval '1 month') as ano_mes_prox
+     , EXTRACT(year FROM min(data) + interval '1 month' )  as ano_prox
+     , EXTRACT(month FROM min(data) + interval '1 month') as mes_prox
+
+     , (EXTRACT(year FROM min(data) - interval '1 month' ) * 100) + EXTRACT(month FROM min(data) - interval '1 month') as ano_mes_ant
+     , EXTRACT(year FROM min(data) - interval '1 month' )  as ano_ant
+     , EXTRACT(month FROM min(data) - interval '1 month') as mes_ant
+
+     , EXTRACT(day from max(case when c.flg_dia_util = 'S' then c.data else null end)) as num_ult_dia_util
+     , EXTRACT(day from min(case when c.flg_dia_util = 'S' then c.data else null end)) as num_prim_dia_util
+    from calendario c
+    group by EXTRACT(year FROM c.data), EXTRACT(month FROM c.data);
+   --
+
 
   RETURN rowsAffected;
 END;
 $$;
+
 
 alter function gera_calendario() owner to postgres;
