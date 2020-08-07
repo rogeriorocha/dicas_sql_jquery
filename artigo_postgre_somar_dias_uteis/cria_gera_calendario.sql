@@ -72,6 +72,8 @@ declare
 
    v_calendario RECORD;
 BEGIN
+   delete from calendario;
+   delete from ano_mes;
    rowsAffected := 0;
 
    data_de := to_date('1991-01-01', 'YYYY-MM-DD');
@@ -81,7 +83,7 @@ BEGIN
    num_dia_util := 0;
    dat_ant_util := null;
 
-   delete from ano_mes;
+
 
    WHILE data_de <= data_ate LOOP
        rowsAffected := rowsAffected + 1;
@@ -140,7 +142,13 @@ BEGIN
    END LOOP;
 
    --
+   --select a from ano_mes a;
     insert into ano_mes
+    (ano, mes, qtd_dia, qtd_dia_util, dat_prim_dia, dat_prim_dia_util, dat_ult_dia,
+     dat_ult_dia_util, ano_mes, ano_mes_prox, ano_prox, mes_prox,
+     ano_mes_ant, ano_ant, mes_ant,
+     num_ult_dia_util, num_prim_dia_util
+     )
     select EXTRACT(year FROM c.data) as ano, EXTRACT(month FROM c.data) as mes, count(*) as qtd_dia
      , sum(case when c.flg_dia_util = 'S' then 1 else 0 end) as qtd_dia_util
      , min(data) as dat_prim_dia
